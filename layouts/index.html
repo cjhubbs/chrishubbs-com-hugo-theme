@@ -16,28 +16,25 @@
     <h1 class="sr-only">{{ .Site.Title }}</h1>
     <h2 class="sr-only">The Blog</h2>
     {{ range $i, $p := first $essayCount $essays }}
-    <article class="essay h-entry{{ if eq $i 0 }} essay-lead{{ end }}">
+    {{ if eq $i 0 }}
+    <article class="essay essay-lead h-entry">
+      <a class="feed-tag" href="{{ "categories/longform/" | relURL }}" title="All blog posts"><i class="fa-solid fa-pen-nib" aria-hidden="true"></i>The Blog</a>
       <header>
-        <div class="essay-meta">
-          <time class="dt-published" datetime="{{ $p.Date.Format "2006-01-02T15:04:05-07:00" }}"><i class="fa-regular fa-calendar" aria-hidden="true"></i>{{ partial "dateformat/long" $p }}</time>
-          <span><i class="fa-regular fa-clock" aria-hidden="true"></i>{{ $p.ReadingTime }} min read</span>
-        </div>
         <h3 class="p-name"><a class="u-url" href="{{ $p.Permalink }}">{{ $p.Title }}</a></h3>
+        <time class="dt-published sr-only" datetime="{{ $p.Date.Format "2006-01-02T15:04:05-07:00" }}">{{ partial "dateformat/long" $p }}</time>
       </header>
-      {{ if eq $i 0 }}
       <div class="e-content lead-content">{{ $p.Content }}</div>
       <footer>
         <a class="read-link" href="{{ $p.Permalink }}"><i class="fa-regular fa-comment" aria-hidden="true"></i>Share and comment</a>
         {{ partial "postmeta.html" $p }}
       </footer>
-      {{ else }}
-      <p class="p-summary">{{ $p.Summary | plainify | truncate 260 }}</p>
-      <footer>
-        <a class="read-link" href="{{ $p.Permalink }}">Keep reading <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
-        {{ partial "postmeta.html" $p }}
-      </footer>
-      {{ end }}
     </article>
+    {{ else }}
+    <article class="essay essay-compact h-entry">
+      <h3 class="p-name"><a class="u-url" href="{{ $p.Permalink }}">{{ $p.Title }}</a></h3>
+      <time class="dt-published" datetime="{{ $p.Date.Format "2006-01-02T15:04:05-07:00" }}">{{ partial "dateformat/long" $p }}</time>
+    </article>
+    {{ end }}
     {{ end }}
 
     <p class="more-row">
@@ -51,7 +48,6 @@
     <section class="panel panel-micro">
       <header class="panel-head">
         <h2><i class="fa-solid fa-bolt-lightning" aria-hidden="true"></i>Bite Sized</h2>
-        <a href="{{ "categories/microposts/" | relURL }}" title="All bite-sized posts">All <i class="fa-solid fa-arrow-right"></i></a>
       </header>
       <ol class="micro-list">
         {{ range first 3 $micro }}
@@ -62,6 +58,7 @@
         {{ end }}
       </ol>
       <footer class="panel-foot">
+        <a class="panel-all" href="{{ "categories/microposts/" | relURL }}" title="All bite-sized posts">All <i class="fa-solid fa-arrow-right"></i></a>
         <a href="https://bsky.app/profile/chrishubbs.com"><i class="fa-brands fa-bluesky"></i> Bluesky</a>
         <a href="https://mastodon.online/@cjhubbs"><i class="fa-brands fa-mastodon"></i> Mastodon</a>
       </footer>
@@ -70,21 +67,18 @@
     <section class="panel panel-podcast">
       <header class="panel-head">
         <h2><i class="fa-solid fa-microphone-lines" aria-hidden="true"></i>Podcast</h2>
-        <a href="{{ "categories/podcast/" | relURL }}" title="All episodes">All <i class="fa-solid fa-arrow-right"></i></a>
       </header>
       <ol class="episode-list">
         {{ range first 3 $podcast }}
         <li class="episode h-entry">
-          <div class="ep-top">
-            <span class="ep-date"><i class="fa-regular fa-calendar"></i>{{ .Date.Format "Jan 2, 2006" }}</span>
-            {{ with index .Params.audio_with_metadata 0 }}{{ with .duration_display }}<span class="ep-dur"><i class="fa-solid fa-play"></i>{{ . | strings.TrimPrefix "00:" }}</span>{{ end }}{{ end }}
-          </div>
+          <time class="dt-published sr-only" datetime="{{ .Date.Format "2006-01-02T15:04:05-07:00" }}">{{ .Date.Format "Jan 2, 2006" }}</time>
           <h3 class="p-name"><a class="u-url" href="{{ .Permalink }}">{{ .Title }}</a></h3>
           {{ with index .Params.audio_with_metadata 0 }}<audio controls preload="none" src="{{ .url }}"></audio>{{ end }}
         </li>
         {{ end }}
       </ol>
       <footer class="panel-foot">
+        <a class="panel-all" href="{{ "categories/podcast/" | relURL }}" title="All episodes">All <i class="fa-solid fa-arrow-right"></i></a>
         <a href="{{ "podcast.xml" | relURL }}"><i class="fa-solid fa-rss"></i> Subscribe</a>
       </footer>
     </section>
