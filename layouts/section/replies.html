@@ -1,0 +1,15 @@
+{{ define "main" }}
+<div class="page-wrap">
+  <div class="section-head"><h1><i class="fa-solid fa-comments"></i>{{ T "Recent replies" }}</h1></div>
+  <div class="h-feed list-feed">
+    {{ range first 25 (where .Data.Pages.ByDate.Reverse "Type" "reply") }}
+    <article class="essay h-entry">
+      <div class="essay-meta"><a class="u-url" href="{{ .Permalink }}"><time class="dt-published" datetime="{{ .Date.Format "2006-01-02T15:04:05-07:00" }}">{{ .Date.Format "Jan 2, 2006" }}</time></a></div>
+      {{ with .Title }}<h3 class="p-name">{{ . }}</h3>{{ end }}
+      {{ if .Params.reply_to_url }}<p class="reply-to"><i class="fa-solid fa-reply"></i> <a href="{{ .Params.reply_to_url }}" class="u-in-reply-to">{{ if eq .Params.reply_to_hostname "micro.blog" }}@{{ .Params.reply_to_username }}{{ else }}{{ .Params.reply_to_hostname }}{{ end }}</a></p>{{ end }}
+      <div class="e-content">{{ .Content }}</div>
+    </article>
+    {{ end }}
+  </div>
+</div>
+{{ end }}

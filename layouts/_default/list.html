@@ -1,0 +1,46 @@
+{{ define "main" }}
+{{/* The Longform category is "The Blog": hide podcast episodes and page it exactly like the home page. */}}
+{{ $isBlog := and (eq .Kind "term") (eq (lower .Title) "longform") }}
+{{ $pages := where .Pages.ByDate.Reverse "Type" "post" }}
+{{ if $isBlog }}
+  {{ $pod := where $pages "Params.categories" "intersect" (slice "podcast" "Podcast") }}
+  {{ $pages = complement $pod $pages }}
+{{ end }}
+{{ $isPod := and (eq .Kind "term") (eq (lower .Title) "podcast") }}
+{{ $size := .Site.Params.longform_count | default 10 }}
+<div class="page-wrap">
+  <div class="section-head">
+    <h1 class="p-name"><i class="fa-solid {{ if $isPod }}fa-microphone-lines{{ else }}fa-tag{{ end }}" aria-hidden="true"></i>{{ if $isBlog }}The Blog{{ else if $isPod }}Podcast{{ else }}{{ .Title }}{{ end }}</h1>
+    <p>{{ if $isPod }}Every weekday. No longer than 5 minutes. You have been warned.{{ else }}{{ T "Archive text" }}{{ end }}</p>
+  </div>
+  <div class="h-feed list-feed">
+    {{ $paginator := .Paginate $pages $size }}
+    {{ range $paginator.Pages }}
+    <article class="essay h-entry{{ if not .Title }} is-micro{{ end }}">
+      <div class="essay-meta">
+        <a class="u-url" href="{{ .Permalink }}"><time class="dt-published" datetime="{{ .Date.Format "2006-01-02T15:04:05-07:00" }}"><i class="fa-regular fa-calendar"></i>{{ partial "dateformat/long" . }}</time></a>
+      </div>
+      {{ if and $isPod .Params.audio_with_metadata }}
+      <h3 class="p-name"><a href="{{ .Permalink }}">{{ .Title }}</a></h3>
+      {{ $blurb := .Summary | plainify | htmlUnescape | replaceRE `\s*Transcript\s*$` "" | strings.TrimSpace }}
+      {{ with $blurb }}<p class="p-summary">{{ . | truncate 320 }}</p>{{ end }}
+      {{ with index .Params.audio_with_metadata 0 }}
+      <div class="player"><audio controls preload="none" src="{{ .url }}"></audio>{{ with .duration_display }}<span><i class="fa-solid fa-hourglass-half"></i>{{ . | strings.TrimPrefix "00:" }}</span>{{ end }}</div>
+      {{ end }}
+      {{ with .Params.transcript }}<a class="read-link" href="{{ . | relURL }}"><i class="fa-solid fa-align-left"></i>Transcript</a>{{ end }}
+      {{ else if .Title }}
+      <h3 class="p-name"><a href="{{ .Permalink }}">{{ .Title }}</a></h3>
+      <p class="p-summary">{{ .Summary | plainify | truncate 320 }}</p>
+      <a class="read-link" href="{{ .Permalink }}">{{ T "Read more" }} <i class="fa-solid fa-arrow-right"></i></a>
+      {{ else }}
+      <div class="e-content">{{ .Content }}</div>
+      {{ end }}
+    </article>
+    {{ end }}
+  </div>
+  <nav class="pager">
+    {{ if $paginator.HasPrev }}<a class="btn btn-ghost" href="{{ $paginator.Prev.URL }}"><i class="fa-solid fa-arrow-left"></i>{{ T "Newer" }}</a>{{ end }}
+    {{ if $paginator.HasNext }}<a class="btn" href="{{ $paginator.Next.URL }}">{{ T "Older" }}<i class="fa-solid fa-arrow-right"></i></a>{{ end }}
+  </nav>
+</div>
+{{ end }}

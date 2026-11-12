@@ -1,0 +1,69 @@
+{{/* Shared archive body: used by archive/single.html and the ArchiveHTML output. */}}
+{{ $all := .Site.RegularPages.ByDate.Reverse }}
+{{ $podcast := where $all "Params.categories" "intersect" (slice "podcast" "Podcast") }}
+{{ $longform := where $all "Params.categories" "intersect" (slice "Longform" "longform") }}
+{{ $cats := .Site.Taxonomies.categories.Alphabetical }}
+<div class="page-wrap archive-page">
+  <div class="section-head">
+    <h1><i class="fa-solid fa-box-archive" aria-hidden="true"></i>{{ T "Archive" }}</h1>
+    <p>{{ len $longform }} longform posts and {{ len $podcast }} podcast episodes, going back to 2004.</p>
+  </div>
+
+  <div class="arch-quick">
+    <a class="q-blog" href="{{ "categories/longform/" | relURL }}"><i class="fa-solid fa-feather-pointed"></i>All longform</a>
+    <a class="q-micro" href="{{ "categories/microposts/" | relURL }}"><i class="fa-solid fa-bolt-lightning"></i>All bite sized</a>
+    <a class="q-pod" href="{{ "categories/podcast/" | relURL }}"><i class="fa-solid fa-microphone-lines"></i>All podcast episodes</a>
+  </div>
+
+  <div class="arch-tools">
+    <label class="arch-filter"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input type="search" id="arch-q" placeholder="Filter by title or year…" aria-label="Filter archive"></label>
+    <span class="arch-count" id="arch-count" aria-live="polite"></span>
+  </div>
+
+  {{ $groups := $longform.GroupByDate "2006" }}
+  <nav class="year-jump" aria-label="Jump to year">
+    {{ range $groups }}<a href="#y{{ .Key }}">{{ .Key }}</a>{{ end }}
+  </nav>
+
+  <div class="h-feed" id="arch-list">
+    {{ range $i, $g := $groups }}
+    <details class="year-block" id="y{{ $g.Key }}"{{ if lt $i 2 }} open{{ end }}>
+      <summary><span class="y">{{ $g.Key }}</span><span class="n">{{ len $g.Pages }} posts</span></summary>
+      <ul>
+        {{ range $g.Pages }}
+        <li class="h-entry" data-t="{{ .Title | lower }} {{ $g.Key }}"><time class="dt-published" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2" }}</time><a class="p-name u-url" href="{{ .Permalink }}">{{ .Title }}</a>{{ if or (in .Params.categories "podcast") (in .Params.categories "Podcast") }}<i class="fa-solid fa-microphone-lines" title="Podcast episode"></i>{{ end }}</li>
+        {{ end }}
+      </ul>
+    </details>
+    {{ end }}
+    <p class="arch-empty" id="arch-empty" hidden>Nothing matches that filter.</p>
+  </div>
+
+  {{ with $cats }}
+  <details class="cat-cloud" style="margin-top:28px">
+    <summary><i class="fa-solid fa-tags"></i>Browse by topic <span>({{ len . }})</span></summary>
+    <div class="chips">{{ range . }}<a href="{{ .Page.Permalink }}">{{ .Page.Title }}<small>{{ .Count }}</small></a>{{ end }}</div>
+  </details>
+  {{ end }}
+</div>
+
+<script>
+(function(){
+  var q=document.getElementById("arch-q"),list=document.getElementById("arch-list"),
+      blocks=[].slice.call(list.querySelectorAll(".year-block")),
+      empty=document.getElementById("arch-empty"),count=document.getElementById("arch-count");
+  function openHash(){var h=location.hash;if(h.length>1){var d=document.getElementById(h.slice(1));if(d&&d.tagName==="DETAILS"){d.open=true;d.scrollIntoView()}}}
+  addEventListener("hashchange",openHash);openHash();
+  var wasOpen=blocks.map(function(b){return b.open});
+  q.addEventListener("input",function(){
+    var v=q.value.trim().toLowerCase(),shown=0;
+    blocks.forEach(function(b,i){
+      var hits=0;
+      [].forEach.call(b.querySelectorAll("li"),function(li){var m=!v||li.getAttribute("data-t").indexOf(v)>-1;li.hidden=!m;if(m)hits++});
+      b.hidden=hits===0;shown+=hits;
+      if(v){b.open=hits>0}else{b.open=wasOpen[i]}
+    });
+    empty.hidden=shown>0;count.textContent=v?shown+" match"+(shown===1?"":"es"):"";
+  });
+})();
+</script>

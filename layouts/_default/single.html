@@ -1,0 +1,13 @@
+{{ define "main" }}
+<div class="page-wrap">
+  <article class="prose page">
+    <header class="page-head">
+      <h1 class="p-name">{{ with .Title }}{{ . }}{{ else }}{{ T "Quick update" }}{{ end }}</h1>
+    </header>
+    {{ if .Params.reply_to_url }}
+    <p class="reply-to"><i class="fa-solid fa-reply"></i> {{ T "Replying to" }}: {{ if eq .Params.reply_to_hostname "micro.blog" }}<a href="{{ .Params.reply_to_url }}" class="u-in-reply-to">@{{ .Params.reply_to_username }}</a>{{ else }}<a href="{{ .Params.reply_to_url }}" class="u-in-reply-to">{{ .Params.reply_to_hostname }}</a>{{ end }}</p>
+    {{ end }}
+    <div class="e-content">{{ .Content }}</div>
+  </article>
+</div>
+{{ end }}

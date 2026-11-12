@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.Params.defaultContentLanguage | default "en" }}">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#14213d">
+  <meta name="twitter:card" content="summary">
+  {{ $title := cond (or .IsHome (not .Title)) .Site.Title .Title }}
+  <meta name="twitter:title" content="{{ $title }}">
+  <meta property="og:title" content="{{ $title }}">
+  {{ if .IsHome }}
+  <meta name="description" content="{{ .Site.Params.itunes_description }}">
+  <meta name="twitter:description" content="{{ .Site.Params.itunes_description | truncate 125 }}">
+  <meta property="og:description" content="{{ .Site.Params.itunes_description | truncate 125 }}">
+  <meta name="twitter:image" content="{{ .Site.Params.author.avatar }}">
+  <meta property="og:image" content="{{ .Site.Params.author.avatar }}">
+  {{ else }}
+  <meta name="description" content="{{ .Summary | plainify | truncate 160 }}">
+  <meta name="twitter:description" content="{{ .Summary | plainify | truncate 125 }}">
+  <meta property="og:description" content="{{ .Summary | plainify | truncate 125 }}">
+  {{ if .Params.photos }}{{ with index .Params.photos 0 }}<meta property="og:image" content="{{ . }}">{{ end }}{{ else }}{{ with .Params.opengraph }}<meta property="og:image" content="{{ .image }}">{{ end }}{{ end }}
+  {{ end }}
+  <title>{{ if .IsHome }}{{ .Site.Title }}{{ else if .Title }}{{ .Title }} | {{ .Site.Title }}{{ else }}{{ delimit (split (.Summary | plainify) " " | first 5) " " }} … | {{ .Site.Title }}{{ end }}</title>
+  <link rel="canonical" href="{{ .Permalink }}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Newsreader:ital,opsz,wght@0,6..72,300..800;1,6..72,300..800&family=Atkinson+Hyperlegible:ital,wght@1,400;1,700&family=Space+Grotesk:wght@400..700&display=swap">
+  <link rel="stylesheet" href="{{ "css/all.min.css" | relURL }}?{{ .Site.Params.theme_seconds }}">
+  <link rel="stylesheet" href="{{ "css/theme.css" | relURL }}?{{ .Site.Params.theme_seconds }}">
+  {{ partial "head.html" . }}
+</head>
+<body class="kind-{{ .Kind }}{{ block "bodyclass" . }}{{ end }}{{ with .Type }} type-{{ . }}{{ end }}">
+  {{ partial "header.html" . }}
+  <div class="shell">
+    {{ block "main" . }}{{ end }}
+  </div>
+  {{ partial "footer.html" . }}
+  {{ partial "custom_footer.html" . }}
+  {{ range .Site.Params.plugins_js }}<script src="{{ . }}"></script>
+  {{ end }}
+</body>
+</html>

@@ -1,0 +1,26 @@
+{{/* Slim top bar: title + navigation. Icons are matched by menu item name. */}}
+{{ $icons := dict "books" "fa-book-open" "podcast" "fa-microphone-lines" "subscribe" "fa-envelope-open-text" "archive" "fa-box-archive" "about" "fa-user" "now" "fa-bolt" "photos" "fa-camera" "replies" "fa-comments" }}
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand p-name u-url" href="{{ "/" | relURL }}">
+      <span class="brand-mark" aria-hidden="true"></span><span>Chris<b>Hubbs</b>.com</span>
+    </a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
+    <label for="nav-toggle" class="nav-burger" aria-hidden="true"><i class="fa-solid fa-bars"></i></label>
+    <nav class="topnav" aria-label="Main">
+      <ul>
+        {{ range .Site.Menus.main }}
+        {{ $icon := index $icons (lower .Name) | default "fa-hashtag" }}
+        {{ $href := .URL | relLangURL }}{{ with .Page }}{{ with .Params.redirect }}{{ $href = . }}{{ if findRE `^https?://(www\.)?chrishubbs\.com(/|$)` . }}{{ $href = (replaceRE `^https?://(www\.)?chrishubbs\.com` "" . | default "/" | relURL) }}{{ end }}{{ end }}{{ end }}
+        <li><a class="{{ if $.IsMenuCurrent "main" . }}is-current{{ end }}" href="{{ $href | safeURL }}"><i class="fa-solid {{ $icon }}" aria-hidden="true"></i>{{ .Name }}</a></li>
+        {{ end }}
+      </ul>
+    </nav>
+  </div>
+</header>
+<div class="epigraph-bar">
+  <blockquote class="epigraph">
+    <p>&ldquo;I endeavour to be one of those who write because they have made some progress, and who, by means of writing, make further progress.&rdquo;</p>
+    <cite>&mdash; Saint Augustine, <a href="https://www.newadvent.org/fathers/1102143.htm" target="_blank" rel="noopener">Letter 143.2</a></cite>
+  </blockquote>
+</div>

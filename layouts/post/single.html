@@ -1,0 +1,32 @@
+{{ define "main" }}
+{{ $isPodcast := or (in .Params.categories "podcast") (in .Params.categories "Podcast") }}
+<div class="page-wrap">
+  <article class="prose post h-entry {{ range .Params.categories }} {{ . | urlize | lower }}{{ end }}">
+    <header class="post-head">
+      <div class="essay-meta">
+        <time class="dt-published" datetime="{{ .Date.Format "2006-01-02T15:04:05-07:00" }}"><i class="fa-regular fa-calendar"></i>{{ if .Title }}{{ partial "dateformat/long" . }}{{ else }}{{ .Date.Format "January 2, 2006 · 3:04pm" }}{{ end }}</time>
+        {{ if .Title }}<span><i class="fa-regular fa-clock"></i>{{ .ReadingTime }} min read</span>{{ end }}
+        {{ if $isPodcast }}<span class="tag-pod"><i class="fa-solid fa-microphone-lines"></i>Podcast</span>{{ end }}
+      </div>
+      {{ if .Title }}<h1 class="p-name">{{ .Title }}</h1>{{ end }}
+    </header>
+
+    {{ if .Params.reply_to_url }}
+    <p class="reply-to"><i class="fa-solid fa-reply"></i> {{ T "Replying to" }}: {{ if eq .Params.reply_to_hostname "micro.blog" }}<a href="{{ .Params.reply_to_url }}" class="u-in-reply-to">@{{ .Params.reply_to_username }}</a>{{ else }}<a href="{{ .Params.reply_to_url }}" class="u-in-reply-to">{{ .Params.reply_to_hostname }}</a>{{ end }}</p>
+    {{ end }}
+
+    <div class="e-content {{ if .Title }}with-title{{ else }}without-title{{ end }}">{{ .Content }}</div>
+
+    <footer class="post-foot">
+      {{ partial "postmeta.html" . }}
+      {{ if templates.Exists "partials/reply-by-email.html" }}<span class="reply-btn">{{ partial "reply-by-email.html" . }}</span>{{ end }}
+      {{ if templates.Exists "partials/conversation-link.html" }}<span class="reply-btn">{{ partial "conversation-link.html" . }}</span>{{ end }}
+      {{ if templates.Exists "partials/reply-on-mastodon.html" }}<span class="reply-btn">{{ partial "reply-on-mastodon.html" . }}</span>{{ end }}
+    </footer>
+  </article>
+
+  <div class="comments">
+    {{ if .Site.Params.include_conversation }}<script src="https://micro.blog/conversation.js?url={{ .Permalink }}"></script>{{ end }}
+  </div>
+</div>
+{{ end }}

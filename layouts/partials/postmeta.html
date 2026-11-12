@@ -1,0 +1,9 @@
+{{/* Category chips, hiding the structural categories. Usage: partial "postmeta.html" . */}}
+{{ $hide := slice "longform" "podcast" "microposts" "micropost" }}
+{{ $cats := slice }}
+{{ range .Params.categories }}{{ if not (in $hide (lower .)) }}{{ $cats = $cats | append . }}{{ end }}{{ end }}
+{{ with $cats }}
+<ul class="chips">
+  {{ range first 4 . }}<li><a href="{{ print "categories/" (urlize .) "/" | relURL }}"><i class="fa-solid fa-tag" aria-hidden="true"></i>{{ . }}</a></li>{{ end }}
+</ul>
+{{ end }}

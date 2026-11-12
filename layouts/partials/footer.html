@@ -1,0 +1,12 @@
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-line"><span class="brand-mark" aria-hidden="true"></span>Blogging since 2004 &middot; &copy; {{ now.Format "2006" }} {{ .Site.Params.author.name }}</p>
+    <ul class="footer-links">
+      <li><a href="{{ "feed.xml" | relURL }}"><i class="fa-solid fa-rss"></i> RSS</a></li>
+      {{ if .Site.Params.has_podcasts }}<li><a href="{{ "podcast.xml" | relURL }}"><i class="fa-solid fa-podcast"></i> Podcast feed</a></li>{{ end }}
+      <li><a rel="me" href="https://micro.blog/{{ .Site.Params.author.username }}"><i class="fa-solid fa-at"></i> Micro.blog</a></li>
+      <li><a rel="me" href="https://bsky.app/profile/chrishubbs.com"><i class="fa-brands fa-bluesky"></i> Bluesky</a></li>
+      <li><a rel="me" href="https://mastodon.online/@cjhubbs"><i class="fa-brands fa-mastodon"></i> Mastodon</a></li>
+    </ul>
+  </div>
+</footer>
