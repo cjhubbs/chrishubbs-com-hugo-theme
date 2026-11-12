@@ -355,6 +355,12 @@ body:not(.is-front) .arch-filter input { color: #fff; }
 .list-feed .essay .read-link:last-child { display: inline-block; }
 @media (max-width: 720px) { .list-feed .essay { padding: 18px 18px 16px; } }
 
+/* Home page: each blog post sits on a soft light-blue panel, matching the podcast list */
+.feed .essay { background: rgba(255,255,255,.08); border-radius: 16px; padding: 22px 26px 8px; margin: 0 0 14px; }
+.feed .essay.essay-lead { padding-top: 22px; padding-bottom: 8px; margin-bottom: 14px; }
+.feed .essay .essay-meta { margin-bottom: 8px; }
+@media (max-width: 720px) { .feed .essay, .feed .essay.essay-lead { padding: 18px 18px 6px; } }
+
 /* Accessibility helpers */
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
@@ -364,3 +370,11 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px soli
   .nav-toggle { display: block; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; margin: 0; opacity: 0; cursor: pointer; z-index: 2; }
   .nav-toggle:focus-visible + .nav-burger { outline: 3px solid var(--sun); border-radius: 8px; }
 }
+
+/* ---------- Guard against leftover Custom CSS from the previous theme ----------
+   Micro.blog's Design > Custom CSS setting can still hold old rules (e.g. body { max-width: 800px }).
+   These higher-specificity rules keep the layout correct regardless. */
+html body { max-width: none; padding: 0; margin: 0; }
+html body .e-content img, html body article img, html body .p-summary img { max-width: 100%; width: auto; height: auto; }
+html body footer.site-footer { margin-top: 0; }
+html body .post-preview { border: 0; margin: 0; }
