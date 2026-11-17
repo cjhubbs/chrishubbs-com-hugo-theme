@@ -131,9 +131,12 @@ body.is-front .site-footer { margin-top: 0; }
 .panel-micro a { color: var(--ink); }
 .micro-list { list-style: none; margin: 0; padding: 0; counter-reset: m; }
 .mp { background: rgba(255,255,255,.4); border-radius: 14px; padding: 12px 14px 8px; margin-bottom: 12px; font-size: .98rem; line-height: 1.45; position: relative; }
+.mp .e-content { display: flow-root; } /* contain floated images (e.g. book covers) inside the panel */
 .mp .e-content > :first-child { margin-top: 0; }
 .mp .e-content p { margin: 0 0 .5em; }
 .mp .e-content img { border-radius: 8px; margin-top: 4px; }
+.mp .e-content img[align="left"] { float: left; margin: 2px 14px 4px 0; }
+.mp .e-content img[align="right"] { float: right; margin: 2px 0 4px 14px; }
 .mp .stamp { display: block; text-align: right; font: 500 .72rem var(--ui); color: rgba(11,19,41,.7); text-decoration: none; letter-spacing: .03em; }
 .mp .stamp:hover { color: var(--ink); text-decoration: underline; }
 
